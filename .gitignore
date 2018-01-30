@@ -7,8 +7,6 @@
 # Gradle
 # ------
 .gradle
-gradlew.bat
-gradle
 graphenej/build
 /build
 /buildSrc/build
@@ -65,10 +63,6 @@ atlassian-ide-plugin.xml
 # ----
 .java-version
 
-# OS X
-# ----
-.DS_Store
-
 # HPROF
 # -----
 *.hprof
@@ -99,7 +93,5 @@ release.properties
 *.war
 *.ear
 
-# Build dir
-graphenej/build
 
 local.properties

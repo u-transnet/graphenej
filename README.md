@@ -1,5 +1,6 @@
 # graphenej
-A Java library for mobile app Developers; Graphene/Bitshares blockchain.
+A Java library for Graphene/Bitshares blockchain.
+Port of [Android library](https://github.com/computationalcore/graphenej) to JDK.
 
 ## Usage
 
@@ -17,7 +18,7 @@ In yout app module, add the following dependency:
 
 ```Groovy
 dependencies {
-    compile 'com.github.bilthon:graphenej:0.4.2'
+    compile 'com.github.utransnet:graphenej:0.4.2'
 }
 ```
 
