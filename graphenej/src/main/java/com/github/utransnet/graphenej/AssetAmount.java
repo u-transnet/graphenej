@@ -21,13 +21,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import com.github.utransnet.graphenej.errors.IncompatibleOperation;
-import com.github.utransnet.graphenej.interfaces.ByteSerializable;
-import com.github.utransnet.graphenej.interfaces.JsonSerializable;
+import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
 
 /**
  * Class used to represent a specific amount of a certain asset
  */
-public class AssetAmount implements ByteSerializable, JsonSerializable {
+public class AssetAmount implements GrapheneSerializable {
     /**
      * Constants used in the JSON serialization procedure.
      */
@@ -191,6 +190,12 @@ public class AssetAmount implements ByteSerializable, JsonSerializable {
         return jsonAmount;
     }
 
+    public static AssetAmount fromJsonObject(JsonElement json) {
+        Long amount = json.getAsJsonObject().get(KEY_AMOUNT).getAsLong();
+        String assetId = json.getAsJsonObject().get(KEY_ASSET_ID).getAsString();
+        return new AssetAmount(UnsignedLong.valueOf(amount), new Asset(assetId));
+    }
+
     /**
      * Custom serializer used to translate this object into the JSON-formatted entry we need for a transaction.
      */
@@ -212,10 +217,7 @@ public class AssetAmount implements ByteSerializable, JsonSerializable {
 
         @Override
         public AssetAmount deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            Long amount = json.getAsJsonObject().get(KEY_AMOUNT).getAsLong();
-            String assetId = json.getAsJsonObject().get(KEY_ASSET_ID).getAsString();
-            AssetAmount assetAmount = new AssetAmount(UnsignedLong.valueOf(amount), new Asset(assetId));
-            return assetAmount;
+            return AssetAmount.fromJsonObject(json);
         }
     }
 }

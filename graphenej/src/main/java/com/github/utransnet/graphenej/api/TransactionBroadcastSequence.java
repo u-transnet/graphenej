@@ -1,5 +1,7 @@
 package com.github.utransnet.graphenej.api;
 
+import com.github.utransnet.graphenej.*;
+import com.github.utransnet.graphenej.operations.ProposalCreateOperation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -13,11 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.github.utransnet.graphenej.Asset;
-import com.github.utransnet.graphenej.AssetAmount;
-import com.github.utransnet.graphenej.BlockData;
-import com.github.utransnet.graphenej.RPC;
-import com.github.utransnet.graphenej.Transaction;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.BaseResponse;
@@ -138,13 +135,42 @@ public class TransactionBroadcastSequence extends BaseGrapheneHandler {
                 // Requesting fee amount
                 websocket.sendText(getRequiredFees.toJsonString());
             }else if(baseResponse.id ==  GET_REQUIRED_FEES){
-                Type GetRequiredFeesResponse = new TypeToken<WitnessResponse<List<AssetAmount>>>(){}.getType();
+                boolean proposal = false;
+                for (BaseOperation op: transaction.getOperations()) {
+                    if(op.getId() == OperationType.PROPOSAL_CREATE_OPERATION.ordinal()){
+                        proposal = true;
+                        break;
+                    }
+                }
+
                 GsonBuilder gsonBuilder = new GsonBuilder();
                 gsonBuilder.registerTypeAdapter(AssetAmount.class, new AssetAmount.AssetAmountDeserializer());
-                WitnessResponse<List<AssetAmount>> requiredFeesResponse = gsonBuilder.create().fromJson(response, GetRequiredFeesResponse);
+                gsonBuilder.registerTypeAdapter(FeeForProposing.class, new FeeForProposing.FeeForProposingDeserializer());
 
-                // Setting fees
-                transaction.setFees(requiredFeesResponse.result);
+                if(proposal) {
+                    Type GetRequiredFeesResponse = new TypeToken<WitnessResponse<List<FeeForProposing>>>(){}.getType();
+                    WitnessResponse<List<FeeForProposing>> requiredFeesResponse = gsonBuilder.create().fromJson(response, GetRequiredFeesResponse);
+
+                    for(int i = 0; i < transaction.getOperations().size(); i++) {
+                        BaseOperation op = transaction.getOperations().get(i);
+                        FeeForProposing feeForProposing = requiredFeesResponse.result.get(i);
+                        op.setFee(feeForProposing.proposingFee);
+                        if(op.getId() == OperationType.PROPOSAL_CREATE_OPERATION.ordinal()){
+                            // set fees for proposed operations
+                            ProposalCreateOperation proposalCreateOperation = (ProposalCreateOperation) op;
+                            for (int j = 0; j < proposalCreateOperation.getProposedOps().size(); j++) {
+                                proposalCreateOperation.getProposedOps().get(j).setFee(feeForProposing.proposedOpsFee.get(j));
+                            }
+                        }
+                    }
+                } else {
+                    Type GetRequiredFeesResponse = new TypeToken<WitnessResponse<List<AssetAmount>>>(){}.getType();
+                    WitnessResponse<List<AssetAmount>> requiredFeesResponse = gsonBuilder.create().fromJson(response, GetRequiredFeesResponse);
+
+                    // Setting fees
+                    transaction.setFees(requiredFeesResponse.result);
+
+                }
                 ArrayList<Serializable> transactions = new ArrayList<>();
                 transactions.add(transaction);
 
