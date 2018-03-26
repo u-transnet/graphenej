@@ -3,6 +3,7 @@ package com.github.utransnet.graphenej;
 import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
 import com.google.common.primitives.Bytes;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -130,6 +131,16 @@ public class Array<T extends GrapheneSerializable> implements GrapheneSerializab
             proposedOpsArray.add(obj.toJsonObject());
         }
         return proposedOpsArray;
+    }
+
+    public static  <V extends GrapheneSerializable> Array<V> fromJsonObject(JsonElement json, Class<V> clazz, JsonDeserializationContext context) {
+        JsonArray jsonArray = json.getAsJsonArray();
+        Array<V> array = new Array<>();
+        for (JsonElement element: jsonArray) {
+            V obj = context.deserialize(element, TypeToken.get(clazz).getType());
+            array.add(obj);
+        }
+        return array;
     }
 
     public static class ArraySerializer implements JsonSerializer<Array> {

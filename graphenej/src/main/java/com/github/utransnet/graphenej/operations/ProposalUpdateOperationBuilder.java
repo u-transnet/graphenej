@@ -12,16 +12,16 @@ import java.util.List;
 /**
  * Created by Artem on 25.03.2018.
  */
-public class ProposalUpdateOperationBuilder {
+public class ProposalUpdateOperationBuilder extends BaseOperationBuilder {
     private AssetAmount fee = null;
     private UserAccount feePayingAccount = null;
     private Proposal proposal = null;
     private Array<UserAccount> activeApprovalsToAdd = new Array<>(1);
-    private Array<UserAccount> activeApprovalsToRemove = new Array<>(1);;
-    private Array<UserAccount> ownerApprovalsToAdd = new Array<>(1);;
-    private Array<UserAccount> ownerApprovalsToRemove = new Array<>(1);;
-    private Array<PublicKey> keyApprovalsToAdd = new Array<>(1);;
-    private Array<PublicKey> keyApprovalsToRemove = new Array<>(1);;
+    private Array<UserAccount> activeApprovalsToRemove = new Array<>(1);
+    private Array<UserAccount> ownerApprovalsToAdd = new Array<>(1);
+    private Array<UserAccount> ownerApprovalsToRemove = new Array<>(1);
+    private Array<PublicKey> keyApprovalsToAdd = new Array<>(1);
+    private Array<PublicKey> keyApprovalsToRemove = new Array<>(1);
 
     public ProposalUpdateOperationBuilder setFee(AssetAmount fee) {
         this.fee = fee;

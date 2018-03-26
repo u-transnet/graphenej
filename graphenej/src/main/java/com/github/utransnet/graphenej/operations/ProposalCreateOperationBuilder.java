@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Artem on 24.03.2018.
  */
-public class ProposalCreateOperationBuilder {
+public class ProposalCreateOperationBuilder extends BaseOperationBuilder {
     private AssetAmount fee = null;
     private UserAccount feePayingAccount;
     private List<BaseOperation> proposedOps = new ArrayList<>(1);

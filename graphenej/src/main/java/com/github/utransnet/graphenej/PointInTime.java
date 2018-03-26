@@ -5,6 +5,7 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -28,6 +29,10 @@ public class PointInTime implements GrapheneSerializable {
         this.timestamp = (int) (date.getTime() / 1000);
     }
 
+    public Date toDate() {
+        return new Date((long) timestamp * 1000);
+    }
+
     @Override
     public byte[] toBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(BYTE_LENGTH);
@@ -46,7 +51,7 @@ public class PointInTime implements GrapheneSerializable {
     public JsonElement toJsonObject() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Util.TIME_DATE_FORMAT);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return new JsonPrimitive(simpleDateFormat.format(new Date((long) timestamp * 1000)));
+        return new JsonPrimitive(simpleDateFormat.format(toDate()));
     }
 
     public static class PointInTimeSerializer implements JsonSerializer<PointInTime> {
@@ -54,6 +59,23 @@ public class PointInTime implements GrapheneSerializable {
         @Override
         public JsonElement serialize(PointInTime pointInTime, Type type, JsonSerializationContext jsonSerializationContext) {
             return pointInTime.toJsonObject();
+        }
+    }
+
+    public static class PointInTimeDeserializer implements JsonDeserializer<PointInTime> {
+
+        @Override
+        public PointInTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            String asString = json.getAsString();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Util.TIME_DATE_FORMAT);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            Date date;
+            try {
+                date = simpleDateFormat.parse(asString);
+            } catch (ParseException e) {
+                throw new JsonIOException(e);
+            }
+            return new PointInTime(date);
         }
     }
 
