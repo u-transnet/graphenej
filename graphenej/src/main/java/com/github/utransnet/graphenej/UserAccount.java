@@ -1,13 +1,7 @@
 package com.github.utransnet.graphenej;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 
 import java.io.ByteArrayOutputStream;
@@ -19,13 +13,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.github.utransnet.graphenej.interfaces.ByteSerializable;
-import com.github.utransnet.graphenej.interfaces.JsonSerializable;
-
 /**
  * Class that represents a graphene user account.
  */
-public class UserAccount extends GrapheneObject implements ByteSerializable, JsonSerializable {
+public class UserAccount extends GrapheneObject implements GrapheneSerializable {
 
     public static final String PROXY_TO_SELF = "1.2.5";
     public static final String KEY_MEMBERSHIP_EXPIRATION_DATE = "membership_expiration_date";
@@ -151,8 +142,8 @@ public class UserAccount extends GrapheneObject implements ByteSerializable, Jso
     }
 
     @Override
-    public JsonObject toJsonObject() {
-        return null;
+    public JsonElement toJsonObject() {
+        return new JsonPrimitive(getObjectId());
     }
 
     @Override

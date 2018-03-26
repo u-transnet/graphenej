@@ -1,5 +1,6 @@
 package com.github.utransnet.graphenej;
 
+import com.google.common.primitives.Bytes;
 import com.google.gson.JsonElement;
 
 import com.github.utransnet.graphenej.interfaces.ByteSerializable;
@@ -27,7 +28,7 @@ public class Optional<T extends GrapheneSerializable> implements GrapheneSeriali
         if(optionalField == null)
             return new byte[] { (byte) 0 };
         else
-            return optionalField.toBytes();
+            return Bytes.concat(new byte[]{(byte) 1}, optionalField.toBytes());
     }
 
     public boolean isSet(){
