@@ -4,19 +4,6 @@ package com.github.utransnet.graphenej;
  * Created by nelson on 11/16/16.
  */
 public class RPC {
-    public enum API {
-        READ_ONLY(0),
-        LOGGED_IN(1),
-        DATABASE(2),
-        HISTORY(3),
-        NETWORK_BROADCAST(4);
-
-        public int id;
-
-        API(int id) {
-            this.id = id;
-        }
-    }
 
     public static final String VERSION = "2.0";
     public static final String CALL_LOGIN = "login";
