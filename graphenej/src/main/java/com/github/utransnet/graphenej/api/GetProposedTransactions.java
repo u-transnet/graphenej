@@ -30,7 +30,6 @@ import java.util.Map;
  */
 public class GetProposedTransactions extends BaseGrapheneHandler {
     private String accountId;
-    private UserAccount userAccount;
     private WitnessResponseListener mListener;
     private boolean mOneTime;
 

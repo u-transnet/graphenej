@@ -4,6 +4,20 @@ package com.github.utransnet.graphenej;
  * Created by nelson on 11/16/16.
  */
 public class RPC {
+    public enum API {
+        READ_ONLY(0),
+        LOGGED_IN(1),
+        DATABASE(2),
+        HISTORY(3),
+        NETWORK_BROADCAST(4);
+
+        public int id;
+
+        API(int id) {
+            this.id = id;
+        }
+    }
+
     public static final String VERSION = "2.0";
     public static final String CALL_LOGIN = "login";
     public static final String CALL_NETWORK_BROADCAST = "network_broadcast";
@@ -14,6 +28,7 @@ public class RPC {
     public static final String CALL_CANCEL_ALL_SUBSCRIPTIONS = "cancel_all_subscriptions";
     public static final String CALL_GET_ACCOUNT_BY_NAME = "get_account_by_name";
     public static final String CALL_GET_ACCOUNTS = "get_accounts";
+    public static final String CALL_GET_ACCOUNT_HISTORY = "get_account_history";
     public static final String CALL_GET_PROPOSED_TRANSACTIONS = "get_proposed_transactions";
     public static final String CALL_GET_DYNAMIC_GLOBAL_PROPERTIES = "get_dynamic_global_properties";
     public static final String CALL_BROADCAST_TRANSACTION = "broadcast_transaction";
