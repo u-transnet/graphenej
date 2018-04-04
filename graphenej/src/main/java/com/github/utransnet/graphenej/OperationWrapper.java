@@ -51,4 +51,14 @@ public class OperationWrapper implements GrapheneSerializable {
             return operationWrapper.toJsonObject();
         }
     }
+
+    public static class OperationWrapperDeserializer implements JsonDeserializer<OperationWrapper> {
+
+
+        @Override
+        public OperationWrapper deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            BaseOperation op = context.deserialize(json.getAsJsonObject().get(KEY_OP), BaseOperation.class);
+            return new OperationWrapper(op);
+        }
+    }
 }

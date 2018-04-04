@@ -2,13 +2,11 @@ package com.github.utransnet.graphenej.api;
 
 import com.github.utransnet.graphenej.*;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
-import com.github.utransnet.graphenej.models.ApiCall;
-import com.github.utransnet.graphenej.models.BaseResponse;
-import com.github.utransnet.graphenej.models.HistoricalTransfer;
-import com.github.utransnet.graphenej.models.WitnessResponse;
+import com.github.utransnet.graphenej.models.*;
 import com.github.utransnet.graphenej.objects.Memo;
 import com.github.utransnet.graphenej.objects.Proposal;
 import com.github.utransnet.graphenej.objects.ProposedTransaction;
+import com.github.utransnet.graphenej.operations.ProposalCreateOperation;
 import com.github.utransnet.graphenej.operations.TransferOperation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -80,8 +78,8 @@ public class GetAccountHistory extends ApiIdRequestSequence {
             ApiCall getAccountByAddress = new ApiCall(getApiId(), RPC.CALL_GET_ACCOUNT_HISTORY, params, RPC.VERSION, requestId);
             websocket.sendText(getAccountByAddress.toJsonString());
         } else if(baseResponse.id >= API_ID_RESPONSE) {
-            Type witnessResponseType = new TypeToken<WitnessResponse<List<HistoricalTransfer>>>() {}.getType();
-            WitnessResponse<List<HistoricalTransfer>> witnessResponse = gson.fromJson(response, witnessResponseType);
+            Type witnessResponseType = new TypeToken<WitnessResponse<List<HistoricalOperation>>>() {}.getType();
+            WitnessResponse<List<HistoricalOperation>> witnessResponse = gson.fromJson(response, witnessResponseType);
 
             if (witnessResponse.error != null) {
                 getListener().onError(witnessResponse.error);
@@ -94,10 +92,15 @@ public class GetAccountHistory extends ApiIdRequestSequence {
     @Override
     protected GsonBuilder gsonBuilder() {
         GsonBuilder builder = super.gsonBuilder();
+        builder.registerTypeAdapter(BaseOperation.class, new BaseOperation.BaseOperationDeserializer());
         builder.registerTypeAdapter(TransferOperation.class, new TransferOperation.TransferDeserializer());
+        builder.registerTypeAdapter(ProposalCreateOperation.class, new ProposalCreateOperation.ProposalCreateDeserializer());
         builder.registerTypeAdapter(UserAccount.class, new UserAccount.UserAccountSimpleDeserializer());
         builder.registerTypeAdapter(AssetAmount.class, new AssetAmount.AssetAmountDeserializer());
         builder.registerTypeAdapter(Memo.class, new Memo.MemoDeserializer());
+        builder.registerTypeAdapter(PointInTime.class, new PointInTime.PointInTimeDeserializer());
+        builder.registerTypeAdapter(OperationWrapper.class, new OperationWrapper.OperationWrapperDeserializer());
+        builder.registerTypeAdapter(UInt32.class, new UInt32.UInt32Deserializer());
         return builder;
     }
 }

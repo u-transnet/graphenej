@@ -46,4 +46,12 @@ public class UInt32 implements GrapheneSerializable {
             return uInt32.toJsonObject();
         }
     }
+
+    public static class UInt32Deserializer implements JsonDeserializer<UInt32> {
+
+        @Override
+        public UInt32 deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return new UInt32(json.getAsJsonPrimitive().getAsInt());
+        }
+    }
 }

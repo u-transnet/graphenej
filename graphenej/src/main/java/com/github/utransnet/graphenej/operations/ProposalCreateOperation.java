@@ -1,11 +1,15 @@
 package com.github.utransnet.graphenej.operations;
 
 import com.github.utransnet.graphenej.*;
+import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
+import com.github.utransnet.graphenej.objects.Memo;
 import com.google.common.primitives.Bytes;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
+import static com.github.utransnet.graphenej.operations.TransferOperation.KEY_MEMO;
 
 /**
  * Created by Artem on 22.03.2018.
@@ -39,6 +43,15 @@ public class ProposalCreateOperation extends BaseOperation {
         }
         this.reviewPeriodSeconds = new Optional<>((reviewPeriodSeconds != null) ? new UInt32(reviewPeriodSeconds) : null);
         expirationTime = PointInTime.fromNow(expirationTimeInSeconds);
+    }
+
+    public ProposalCreateOperation(AssetAmount fee, UserAccount feePayingAccount, PointInTime expirationTime, Optional<UInt32> reviewPeriodSeconds, Array<OperationWrapper> proposedOps) {
+        super(OperationType.PROPOSAL_CREATE_OPERATION);
+        this.fee = fee;
+        this.feePayingAccount = feePayingAccount;
+        this.proposedOps = proposedOps;
+        this.expirationTime = expirationTime;
+        this.reviewPeriodSeconds = reviewPeriodSeconds;
     }
 
     public static ProposalCreateOperationBuilder builder() {
@@ -107,6 +120,50 @@ public class ProposalCreateOperation extends BaseOperation {
         @Override
         public JsonElement serialize(ProposalCreateOperation proposalCreate, Type type, JsonSerializationContext jsonSerializationContext) {
             return proposalCreate.toJsonObject();
+        }
+    }
+
+    public static class ProposalCreateDeserializer implements JsonDeserializer<ProposalCreateOperation> {
+
+        @Override
+        public ProposalCreateOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (json.isJsonArray()) {
+                // This block is used just to check if we are in the first step of the deserialization
+                // when we are dealing with an array.
+                JsonArray serializedTransfer = json.getAsJsonArray();
+                if (serializedTransfer.get(0).getAsInt() != OperationType.PROPOSAL_CREATE_OPERATION.ordinal()) {
+                    // If the operation type does not correspond to a transfer operation, we return null
+                    return null;
+                } else {
+                    // Calling itself recursively, this is only done once, so there will be no problems.
+                    return context.deserialize(serializedTransfer.get(1), ProposalCreateOperation.class);
+                }
+            } else {
+                // This block is called in the second recursion and takes care of deserializing the
+                // transfer data itself.
+                JsonObject jsonObject = json.getAsJsonObject();
+
+                AssetAmount fee = context.deserialize(jsonObject.get(KEY_FEE), AssetAmount.class);
+                UserAccount feePayingAccount = context.deserialize(jsonObject.get(KEY_FEE_PAYING_ACCOUNT), UserAccount.class);
+
+                PointInTime expirationTime = context.deserialize(jsonObject.get(KEY_EXPIRATION_TIME), PointInTime.class);
+                Optional<UInt32> reviewPeriodSeconds;
+                if(jsonObject.has(KEY_REVIEW_PERIOD_SECONDS)) {
+                    reviewPeriodSeconds = new Optional<>((UInt32) context.deserialize(jsonObject.get(KEY_REVIEW_PERIOD_SECONDS), UInt32.class));
+                } else {
+                    reviewPeriodSeconds = new Optional<>(null);
+                }
+                Array<OperationWrapper> proposedOps = Array.fromJsonObject(jsonObject.get(KEY_PROPOSED_OPS), OperationWrapper.class, context);
+
+
+                return new ProposalCreateOperation(
+                        fee,
+                        feePayingAccount,
+                        expirationTime,
+                        reviewPeriodSeconds,
+                        proposedOps
+                );
+            }
         }
     }
 
