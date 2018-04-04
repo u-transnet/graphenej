@@ -1,6 +1,7 @@
 package com.github.utransnet.graphenej;
 
 import com.github.utransnet.graphenej.operations.ProposalCreateOperation;
+import com.github.utransnet.graphenej.operations.ProposalUpdateOperation;
 import com.github.utransnet.graphenej.operations.TransferOperation;
 import com.google.gson.*;
 import com.github.utransnet.graphenej.interfaces.ByteSerializable;
@@ -50,6 +51,8 @@ public abstract class BaseOperation implements ByteSerializable, JsonSerializabl
                 return context.deserialize(serializedTransfer.get(1), TransferOperation.class);
             } else if (opType == OperationType.PROPOSAL_CREATE_OPERATION.ordinal()) {
                 return context.deserialize(serializedTransfer.get(1), ProposalCreateOperation.class);
+            } else if (opType == OperationType.PROPOSAL_UPDATE_OPERATION.ordinal()) {
+                return context.deserialize(serializedTransfer.get(1), ProposalUpdateOperation.class);
             } else {
                 // Not implemented operation
                 return null;

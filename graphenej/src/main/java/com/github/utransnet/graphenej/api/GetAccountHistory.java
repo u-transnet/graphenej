@@ -7,6 +7,7 @@ import com.github.utransnet.graphenej.objects.Memo;
 import com.github.utransnet.graphenej.objects.Proposal;
 import com.github.utransnet.graphenej.objects.ProposedTransaction;
 import com.github.utransnet.graphenej.operations.ProposalCreateOperation;
+import com.github.utransnet.graphenej.operations.ProposalUpdateOperation;
 import com.github.utransnet.graphenej.operations.TransferOperation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -95,6 +96,7 @@ public class GetAccountHistory extends ApiIdRequestSequence {
         builder.registerTypeAdapter(BaseOperation.class, new BaseOperation.BaseOperationDeserializer());
         builder.registerTypeAdapter(TransferOperation.class, new TransferOperation.TransferDeserializer());
         builder.registerTypeAdapter(ProposalCreateOperation.class, new ProposalCreateOperation.ProposalCreateDeserializer());
+        builder.registerTypeAdapter(ProposalUpdateOperation.class, new ProposalUpdateOperation.ProposalUpdateDeserializer());
         builder.registerTypeAdapter(UserAccount.class, new UserAccount.UserAccountSimpleDeserializer());
         builder.registerTypeAdapter(AssetAmount.class, new AssetAmount.AssetAmountDeserializer());
         builder.registerTypeAdapter(Memo.class, new Memo.MemoDeserializer());

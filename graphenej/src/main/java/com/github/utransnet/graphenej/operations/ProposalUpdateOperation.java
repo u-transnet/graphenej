@@ -114,4 +114,58 @@ public class ProposalUpdateOperation extends BaseOperation {
         }
     }
 
+    public static class ProposalUpdateDeserializer implements JsonDeserializer<ProposalUpdateOperation> {
+
+        @Override
+        public ProposalUpdateOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (json.isJsonArray()) {
+                // This block is used just to check if we are in the first step of the deserialization
+                // when we are dealing with an array.
+                JsonArray serializedTransfer = json.getAsJsonArray();
+                if (serializedTransfer.get(0).getAsInt() != OperationType.PROPOSAL_UPDATE_OPERATION.ordinal()) {
+                    // If the operation type does not correspond to a transfer operation, we return null
+                    return null;
+                } else {
+                    // Calling itself recursively, this is only done once, so there will be no problems.
+                    return context.deserialize(serializedTransfer.get(1), ProposalUpdateOperation.class);
+                }
+            } else {
+                // This block is called in the second recursion and takes care of deserializing the
+                // transfer data itself.
+                JsonObject jsonObject = json.getAsJsonObject();
+
+                AssetAmount fee = context.deserialize(jsonObject.get(KEY_FEE), AssetAmount.class);
+                UserAccount feePayingAccount = context.deserialize(jsonObject.get(KEY_FEE_PAYING_ACCOUNT), UserAccount.class);
+
+                String proposalId = jsonObject.get(KEY_PROPOSAL).getAsString();
+
+                Array<UserAccount> activeApprovalsToAdd =  Array.fromJsonObject(jsonObject.get(KEY_ACTIVE_APPROVALS_TO_ADD), UserAccount.class, context);
+                Array<UserAccount> activeApprovalsToRemove =  Array.fromJsonObject(jsonObject.get(KEY_ACTIVE_APPROVALS_TO_REMOVE), UserAccount.class, context);
+                Array<UserAccount> ownerApprovalsToAdd =  Array.fromJsonObject(jsonObject.get(KEY_OWNER_APPROVALS_TO_ADD), UserAccount.class, context);
+                Array<UserAccount> ownerApprovalsToRemove =  Array.fromJsonObject(jsonObject.get(KEY_OWNER_APPROVALS_TO_REMOVE), UserAccount.class, context);
+
+
+                //TODO: need PubKeyDeserializer
+                /*Array<PublicKey> keyApprovalsToAdd =  Array.fromJsonObject(jsonObject.get(KEY_KEY_APPROVALS_TO_ADD), PublicKey.class, context);
+                Array<PublicKey> keyApprovalsToRemove =  Array.fromJsonObject(jsonObject.get(KEY_KEY_APPROVALS_TO_REMOVE), PublicKey.class, context);*/
+                Array<PublicKey> keyApprovalsToAdd = new Array<>(1);
+                Array<PublicKey> keyApprovalsToRemove = new Array<>(1);
+
+
+
+                return new ProposalUpdateOperation(
+                        fee,
+                        feePayingAccount,
+                        new Proposal(proposalId),
+                        activeApprovalsToAdd,
+                        activeApprovalsToRemove,
+                        ownerApprovalsToAdd,
+                        ownerApprovalsToRemove,
+                        keyApprovalsToAdd,
+                        keyApprovalsToRemove
+                );
+            }
+        }
+    }
+
 }
