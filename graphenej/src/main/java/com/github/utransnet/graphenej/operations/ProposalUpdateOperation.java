@@ -57,6 +57,42 @@ public class ProposalUpdateOperation extends BaseOperation {
         this.fee = fee;
     }
 
+    public AssetAmount getFee() {
+        return fee;
+    }
+
+    public UserAccount getFeePayingAccount() {
+        return feePayingAccount;
+    }
+
+    public Proposal getProposal() {
+        return proposal;
+    }
+
+    public Array<UserAccount> getActiveApprovalsToAdd() {
+        return activeApprovalsToAdd;
+    }
+
+    public Array<UserAccount> getActiveApprovalsToRemove() {
+        return activeApprovalsToRemove;
+    }
+
+    public Array<UserAccount> getOwnerApprovalsToAdd() {
+        return ownerApprovalsToAdd;
+    }
+
+    public Array<UserAccount> getOwnerApprovalsToRemove() {
+        return ownerApprovalsToRemove;
+    }
+
+    public Array<PublicKey> getKeyApprovalsToAdd() {
+        return keyApprovalsToAdd;
+    }
+
+    public Array<PublicKey> getKeyApprovalsToRemove() {
+        return keyApprovalsToRemove;
+    }
+
     @Override
     public byte[] toBytes() {
         return Bytes.concat(

@@ -67,6 +67,10 @@ public class ProposalCreateOperation extends BaseOperation {
         this.fee = assetAmount;
     }
 
+    public UserAccount getFeePayingAccount() {
+        return feePayingAccount;
+    }
+
     public Array<OperationWrapper> getProposedOps() {
         return proposedOps;
     }

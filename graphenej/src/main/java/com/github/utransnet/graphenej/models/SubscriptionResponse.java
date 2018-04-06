@@ -182,6 +182,14 @@ public class SubscriptionResponse {
                             broadcastedTransaction.setTransactionId(jsonObject.get(BroadcastedTransaction.KEY_TRX_ID).getAsString());
                             objectMap.put(ObjectType.TRANSACTION_OBJECT, true);
                             secondArgument.add(broadcastedTransaction);
+                        }else if(grapheneObject.getObjectType() == ObjectType.ACCOUNT_STATISTICS_OBJECT){
+                            AccountStatisticsObject accountStatisticsObject = context.deserialize(jsonObject, AccountStatisticsObject.class);
+                            objectMap.put(ObjectType.ACCOUNT_STATISTICS_OBJECT, true);
+                            secondArgument.add(accountStatisticsObject);
+                        }else if(grapheneObject.getObjectType() == ObjectType.ACCOUNT_TRANSACTION_HISTORY_OBJECT){
+                            AccountTransactionHistoryObject accountTransactionHistoryObject = context.deserialize(jsonObject, AccountTransactionHistoryObject.class);
+                            objectMap.put(ObjectType.ACCOUNT_TRANSACTION_HISTORY_OBJECT, true);
+                            secondArgument.add(accountTransactionHistoryObject);
                         }else{
                             //TODO: Add support for other types of objects
                         }

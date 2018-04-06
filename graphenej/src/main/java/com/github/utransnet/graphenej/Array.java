@@ -28,6 +28,9 @@ public class Array<T extends GrapheneSerializable> implements GrapheneSerializab
     }
 
 
+    public List<T> getList() {
+        return values;
+    }
 
     public int size() {
         return values.size();

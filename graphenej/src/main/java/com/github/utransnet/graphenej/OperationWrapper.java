@@ -15,7 +15,7 @@ public class OperationWrapper implements GrapheneSerializable {
 
     public static final String KEY_OP = "op";
 
-    BaseOperation op;
+    public BaseOperation op;
 
     public OperationWrapper(BaseOperation op) {
         this.op = op;
