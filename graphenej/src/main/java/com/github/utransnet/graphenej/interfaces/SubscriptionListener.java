@@ -3,6 +3,8 @@ package com.github.utransnet.graphenej.interfaces;
 import com.github.utransnet.graphenej.ObjectType;
 import com.github.utransnet.graphenej.models.SubscriptionResponse;
 
+import java.util.List;
+
 /**
  * Generic interface that must be implemented by any class that wants to be informed about a specific
  * event notification.
@@ -17,6 +19,8 @@ public interface SubscriptionListener {
      * @return: Instance of the ObjectType enum class.
      */
     ObjectType getInterestObjectType();
+
+    List<String> getInterestedAccountNames();
 
 
     /**

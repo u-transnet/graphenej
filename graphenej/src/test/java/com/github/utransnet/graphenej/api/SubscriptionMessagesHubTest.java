@@ -12,7 +12,6 @@ import java.util.TimerTask;
 import com.github.utransnet.graphenej.ObjectType;
 import com.github.utransnet.graphenej.Transaction;
 import com.github.utransnet.graphenej.interfaces.NodeErrorListener;
-import com.github.utransnet.graphenej.interfaces.SubscriptionListener;
 import com.github.utransnet.graphenej.models.BaseResponse;
 import com.github.utransnet.graphenej.models.BroadcastedTransaction;
 import com.github.utransnet.graphenej.models.DynamicGlobalProperties;
@@ -108,7 +107,7 @@ public class SubscriptionMessagesHubTest extends BaseApiTest {
     public void testGlobalPropertiesDeserializer(){
         try{
             mMessagesHub = new SubscriptionMessagesHub("", "", true, mErrorListener);
-            mMessagesHub.addSubscriptionListener(new SubscriptionListener() {
+            mMessagesHub.addSubscriptionListener(new ObjectSubscriptionListener() {
                 private int MAX_MESSAGES = 10;
                 private int messageCounter = 0;
 
@@ -145,7 +144,7 @@ public class SubscriptionMessagesHubTest extends BaseApiTest {
                 }
             });
 
-            mMessagesHub.addSubscriptionListener(new SubscriptionListener() {
+            mMessagesHub.addSubscriptionListener(new ObjectSubscriptionListener() {
                 @Override
                 public ObjectType getInterestObjectType() {
                     return ObjectType.TRANSACTION_OBJECT;
@@ -179,7 +178,7 @@ public class SubscriptionMessagesHubTest extends BaseApiTest {
     public void testBroadcastedTransactionDeserializer(){
         try{
             mMessagesHub = new SubscriptionMessagesHub("", "", mErrorListener);
-            mMessagesHub.addSubscriptionListener(new SubscriptionListener() {
+            mMessagesHub.addSubscriptionListener(new ObjectSubscriptionListener() {
                 private int MAX_MESSAGES = 15;
                 private int messageCounter = 0;
 
