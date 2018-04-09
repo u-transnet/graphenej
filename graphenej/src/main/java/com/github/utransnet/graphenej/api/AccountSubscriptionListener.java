@@ -12,6 +12,6 @@ import java.util.List;
 public abstract class AccountSubscriptionListener implements SubscriptionListener {
     @Override
     public ObjectType getInterestObjectType() {
-        return null;
+        return ObjectType.ACCOUNT_STATISTICS_OBJECT;
     }
 }
