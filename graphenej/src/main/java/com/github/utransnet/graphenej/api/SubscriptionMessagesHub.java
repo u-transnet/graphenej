@@ -1,7 +1,6 @@
 package com.github.utransnet.graphenej.api;
 
 import com.github.utransnet.graphenej.*;
-import com.github.utransnet.graphenej.errors.RepeatedRequestIdException;
 import com.github.utransnet.graphenej.interfaces.NodeErrorListener;
 import com.github.utransnet.graphenej.interfaces.SubscriptionHub;
 import com.github.utransnet.graphenej.interfaces.SubscriptionListener;
@@ -21,10 +20,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A WebSocket adapter prepared to be used as a basic dispatch hub for subscription messages.
@@ -57,7 +53,6 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
     // State variables
     private boolean isUnsubscribing;
     private boolean isSubscribed;
-    private boolean isAccountsSubscribed = false;
 
     /**
      * Constructor used to create a subscription message hub that will call the set_subscribe_callback
@@ -108,11 +103,15 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
     @Override
     public void addSubscriptionListener(SubscriptionListener listener) {
         this.mSubscriptionDeserializer.addSubscriptionListener(listener);
+        if(isSubscribed()){
+            subscribeListener(Collections.singletonList(listener));
+        }
     }
 
     @Override
     public void removeSubscriptionListener(SubscriptionListener listener) {
         this.mSubscriptionDeserializer.removeSubscriptionListener(listener);
+        subscriptionCounter--;
     }
 
     @Override
@@ -169,16 +168,15 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
             if (subscriptionListeners != null &&
                     subscriptionListeners.size() > 0 &&
                     subscriptionCounter < subscriptionListeners.size()) {
-
-                if (!isAccountsSubscribed) {
-                    subscribeForAccounts(websocket, subscriptionListeners);
-                }
-                subscribeForObjects(websocket, subscriptionListeners);
-
-            } else {
-                receiveNotice(websocket, frame, message);
+                subscribeListener(subscriptionListeners);
             }
+            receiveNotice(websocket, frame, message);
         }
+    }
+
+    private void subscribeListener(List<SubscriptionListener> subscriptionListeners) {
+        subscribeForAccounts(subscriptionListeners);
+        subscribeForObjects(subscriptionListeners);
     }
 
     private void receiveNotice(WebSocket websocket, WebSocketFrame frame, String message) throws Exception {
@@ -199,7 +197,7 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
         }
     }
 
-    private void subscribeForAccounts(WebSocket websocket, List<SubscriptionListener> subscriptionListeners) {
+    private void subscribeForAccounts(List<SubscriptionListener> subscriptionListeners) {
         ArrayList<Serializable> accountNames = new ArrayList<>();
         for (SubscriptionListener listener : subscriptionListeners) {
             accountNames.addAll(listener.getInterestedAccountNames());
@@ -209,12 +207,11 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
             payload.add(accountNames);
             payload.add(true);
             ApiCall subscribe = new ApiCall(databaseApiId, RPC.CALL_GET_FULL_ACCOUNTS, payload, RPC.VERSION, ++currentId);
-            websocket.sendText(subscribe.toJsonString());
+            mWebsocket.sendText(subscribe.toJsonString());
         }
-        isAccountsSubscribed = true;
     }
 
-    private void subscribeForObjects(WebSocket websocket, List<SubscriptionListener> subscriptionListeners) {
+    private void subscribeForObjects(List<SubscriptionListener> subscriptionListeners) {
         ArrayList<Serializable> payload = new ArrayList<>();
         ArrayList<Serializable> objects = new ArrayList<>();
         for (SubscriptionListener listener : subscriptionListeners) {
@@ -226,7 +223,7 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
         payload.add(objects);
         subscriptionCounter = subscriptionListeners.size();
         ApiCall subscribe = new ApiCall(databaseApiId, RPC.GET_OBJECTS, payload, RPC.VERSION, ++currentId);
-        websocket.sendText(subscribe.toJsonString());
+        mWebsocket.sendText(subscribe.toJsonString());
     }
 
     private void requestApiId(WebSocket websocket) {
@@ -295,7 +292,7 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
      * @return True if the websocket is open and there is an active subscription, false otherwise.
      */
     public boolean isSubscribed() {
-        return this.mWebsocket.isOpen() && isSubscribed;
+        return this.mWebsocket != null && this.mWebsocket.isOpen() && isSubscribed;
     }
 
     /**
