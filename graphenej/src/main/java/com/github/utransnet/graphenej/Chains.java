@@ -13,4 +13,7 @@ public class Chains {
     public static class TEST {
         public static final String CHAIN_ID = "39f5e2ede1f8bc1a3a54a7914414e3779e33193f1f5693510e73cb7a87617447";
     }
+    public static class UTT {
+        public static final String CHAIN_ID = "773a625737a4686a40d832569f1691730bba2c1adc8009ee6b341b71fff35c18";
+    }
 }
