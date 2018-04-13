@@ -22,7 +22,7 @@ public class CustomOperation extends BaseOperation {
     private String data;
 
     public CustomOperation(AssetAmount fee, UserAccount payer, int operationId, List<UserAccount> requiredAuths, String data) {
-        super(OperationType.CUSTOM_OPERATION);
+        this();
         this.fee = fee;
         this.payer = payer;
         this.operationId = operationId;
@@ -32,6 +32,11 @@ public class CustomOperation extends BaseOperation {
         }
         this.data = data;
     }
+
+    public CustomOperation() {
+        super(OperationType.CUSTOM_OPERATION);
+    }
+
 
     public AssetAmount getFee() {
         return fee;

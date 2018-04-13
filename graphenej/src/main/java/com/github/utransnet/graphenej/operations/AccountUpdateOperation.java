@@ -34,7 +34,7 @@ public class AccountUpdateOperation extends BaseOperation {
      * @param fee The fee to pay. Can be null.
      */
     public AccountUpdateOperation(UserAccount account, Authority owner, Authority active, AccountOptions options, AssetAmount fee){
-        super(OperationType.ACCOUNT_UPDATE_OPERATION);
+        this();
         this.fee = fee;
         this.account = account;
         this.owner = new Optional<>(owner);
@@ -45,6 +45,10 @@ public class AccountUpdateOperation extends BaseOperation {
 
     public AccountUpdateOperation(UserAccount account, Authority owner, Authority active, AccountOptions options){
         this(account, owner, active, options, new AssetAmount(UnsignedLong.valueOf(0), new Asset("1.3.0")));
+    }
+
+    public AccountUpdateOperation() {
+        super(OperationType.ACCOUNT_UPDATE_OPERATION);
     }
 
     @Override

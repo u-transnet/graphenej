@@ -31,8 +31,12 @@ public class ProposalUpdateOperation extends BaseOperation {
     private Array<PublicKey> keyApprovalsToAdd;
     private Array<PublicKey> keyApprovalsToRemove;
 
-    public ProposalUpdateOperation(AssetAmount fee, UserAccount feePayingAccount, Proposal proposal, Array<UserAccount> activeApprovalsToAdd, Array<UserAccount> activeApprovalsToRemove, Array<UserAccount> ownerApprovalsToAdd, Array<UserAccount> ownerApprovalsToRemove, Array<PublicKey> keyApprovalsToAdd, Array<PublicKey> keyApprovalsToRemove) {
+    public ProposalUpdateOperation() {
         super(OperationType.PROPOSAL_UPDATE_OPERATION);
+    }
+
+    public ProposalUpdateOperation(AssetAmount fee, UserAccount feePayingAccount, Proposal proposal, Array<UserAccount> activeApprovalsToAdd, Array<UserAccount> activeApprovalsToRemove, Array<UserAccount> ownerApprovalsToAdd, Array<UserAccount> ownerApprovalsToRemove, Array<PublicKey> keyApprovalsToAdd, Array<PublicKey> keyApprovalsToRemove) {
+        this();
         this.fee = fee;
         this.feePayingAccount = feePayingAccount;
         this.proposal = proposal;

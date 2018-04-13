@@ -15,9 +15,12 @@ public class LimitOrderCancelOperation extends BaseOperation {
     public static final String KEY_FEE_PAYING_ACCOUNT = "fee_paying_account";
     public static final String KEY_ORDER_ID = "order";
 
+    public LimitOrderCancelOperation() {
+        super(OperationType.LIMIT_ORDER_CANCEL_OPERATION);
+    }
 
     public LimitOrderCancelOperation(LimitOrder order, UserAccount feePayingAccount) {
-        super(OperationType.LIMIT_ORDER_CANCEL_OPERATION);
+        this();
         this.order = order;
         this.feePayingAccount = feePayingAccount;
     }

@@ -52,6 +52,10 @@ public class LimitOrderCreateOperation extends BaseOperation {
     private int expiration;
     private boolean fillOrKill;
 
+    public LimitOrderCreateOperation() {
+        super(OperationType.LIMIT_ORDER_CREATE_OPERATION);
+    }
+
     /**
      * @param seller: Id of the seller
      * @param toSell: Id of the asset to sell
@@ -60,7 +64,7 @@ public class LimitOrderCreateOperation extends BaseOperation {
      * @param fillOrKill: If this flag is set the entire order must be filled or the operation is rejected.
      */
     public LimitOrderCreateOperation(UserAccount seller, AssetAmount toSell, AssetAmount minToReceive, int expiration, boolean fillOrKill){
-        super(OperationType.LIMIT_ORDER_CREATE_OPERATION);
+        this();
         this.seller = seller;
         this.amountToSell = toSell;
         this.minToReceive = minToReceive;

@@ -34,8 +34,12 @@ public class TransferOperation extends BaseOperation {
     private UserAccount to;
     private Memo memo;
 
-    public TransferOperation(UserAccount from, UserAccount to, AssetAmount transferAmount, AssetAmount fee){
+    public TransferOperation() {
         super(OperationType.TRANSFER_OPERATION);
+    }
+
+    public TransferOperation(UserAccount from, UserAccount to, AssetAmount transferAmount, AssetAmount fee){
+        this();
         this.from = from;
         this.to = to;
         this.amount = transferAmount;
@@ -44,7 +48,7 @@ public class TransferOperation extends BaseOperation {
     }
 
     public TransferOperation(UserAccount from, UserAccount to, AssetAmount transferAmount){
-        super(OperationType.TRANSFER_OPERATION);
+        this();
         this.from = from;
         this.to = to;
         this.amount = transferAmount;

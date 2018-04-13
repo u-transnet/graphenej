@@ -27,6 +27,10 @@ public class ProposalCreateOperation extends BaseOperation {
     private PointInTime expirationTime;
     private Optional<UInt32> reviewPeriodSeconds;
 
+    public ProposalCreateOperation() {
+        super(OperationType.PROPOSAL_CREATE_OPERATION);
+    }
+
     public ProposalCreateOperation(
             AssetAmount fee,
             UserAccount feePayingAccount,
@@ -34,7 +38,7 @@ public class ProposalCreateOperation extends BaseOperation {
             Integer reviewPeriodSeconds,
             List<BaseOperation> proposedOps
     ) {
-        super(OperationType.PROPOSAL_CREATE_OPERATION);
+        this();
         this.fee = fee;
         this.feePayingAccount = feePayingAccount;
         this.proposedOps = new Array<>();
@@ -46,7 +50,7 @@ public class ProposalCreateOperation extends BaseOperation {
     }
 
     public ProposalCreateOperation(AssetAmount fee, UserAccount feePayingAccount, PointInTime expirationTime, Optional<UInt32> reviewPeriodSeconds, Array<OperationWrapper> proposedOps) {
-        super(OperationType.PROPOSAL_CREATE_OPERATION);
+        this();
         this.fee = fee;
         this.feePayingAccount = feePayingAccount;
         this.proposedOps = proposedOps;
