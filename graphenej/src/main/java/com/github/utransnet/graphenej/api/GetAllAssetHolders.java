@@ -11,6 +11,7 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import com.github.utransnet.graphenej.RPC;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -28,6 +29,9 @@ import java.util.Map;
  *  @see <a href="https://goo.gl/AgTSLU">get_all_asset_holders API doc (source code ref.)</a>
  */
 public class GetAllAssetHolders extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetAllAssetHolders.class);
+
     private final static int LOGIN_ID = 1;
     private final static int GET_ASSET_API_ID = 2;
     private final static int GET_ALL_ASSET_HOLDERS_COUNT = 3;
@@ -72,7 +76,7 @@ public class GetAllAssetHolders extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println("<<< "+frame.getPayloadText());
+            log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         Gson gson = new Gson();
         BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
@@ -104,7 +108,7 @@ public class GetAllAssetHolders extends BaseGrapheneHandler {
                     websocket.disconnect();
                 }
             }else{
-                System.out.println("current id: "+currentId);
+                log.trace("current id: "+currentId);
             }
         }
     }
@@ -112,7 +116,7 @@ public class GetAllAssetHolders extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame()){
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
         }
     }
 }

@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import com.github.utransnet.graphenej.GrapheneObject;
 import com.github.utransnet.graphenej.Util;
+import org.slf4j.Logger;
 
 /**
  * Class used to deserialize the 'result' field returned by the full node after making a call
@@ -59,6 +60,8 @@ public class DynamicGlobalProperties extends GrapheneObject implements Serializa
      */
     public static class DynamicGlobalPropertiesDeserializer implements JsonDeserializer<DynamicGlobalProperties> {
 
+        private static final Logger log = org.slf4j.LoggerFactory.getLogger(DynamicGlobalPropertiesDeserializer.class);
+
         @Override
         public DynamicGlobalProperties deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -75,13 +78,13 @@ public class DynamicGlobalProperties extends GrapheneObject implements Serializa
             try {
                 dynamicGlobal.time = dateFormat.parse(jsonObject.get(DynamicGlobalProperties.KEY_TIME).getAsString());
             } catch (ParseException e) {
-                System.out.println("ParseException. Msg: "+e.getMessage());
+                log.error("ParseException. Msg: "+e.getMessage());
             }
 
             try {
                 dynamicGlobal.next_maintenance_time = dateFormat.parse(jsonObject.get(DynamicGlobalProperties.KEY_NEXT_MAINTENANCE_TIME).getAsString());
             } catch (ParseException e) {
-                System.out.println("ParseException. Msg: "+e.getMessage());
+                log.error("ParseException. Msg: "+e.getMessage());
             }
 
             dynamicGlobal.current_witness = jsonObject.get(DynamicGlobalProperties.KEY_CURRENT_WITNESS).getAsString();

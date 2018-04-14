@@ -13,12 +13,16 @@ import javax.net.ssl.SSLContext;
 import com.github.utransnet.graphenej.interfaces.NodeErrorListener;
 import com.github.utransnet.graphenej.models.BaseResponse;
 import com.github.utransnet.graphenej.test.NaiveSSLContext;
+import org.slf4j.Logger;
 
 /**
  *  Class used to encapsulate the thread where the WebSocket does the requests.
  *
  */
 public class WebsocketWorkerThread extends Thread {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(WebsocketWorkerThread.class);
+
     private final String TAG = this.getClass().getName();
 
     // When debugging we'll use a NaiveSSLContext
@@ -46,11 +50,11 @@ public class WebsocketWorkerThread extends Thread {
 
             mWebSocket = factory.createSocket(url);
         } catch (IOException e) {
-            System.out.println("IOException. Msg: "+e.getMessage());
+            log.error("IOException. Msg: "+e.getMessage());
         } catch(NullPointerException e){
-            System.out.println("NullPointerException at WebsocketWorkerThreas. Msg: "+e.getMessage());
+            log.error("NullPointerException at WebsocketWorkerThreas. Msg: "+e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException. Msg: "+e.getMessage());
+            log.error("NoSuchAlgorithmException. Msg: "+e.getMessage());
         }
     }
 
@@ -76,16 +80,16 @@ public class WebsocketWorkerThread extends Thread {
 
             mWebSocket = factory.createSocket(url);
         } catch (IOException e) {
-            System.out.println("IOException. Msg: "+e.getMessage());
+            log.error("IOException. Msg: "+e.getMessage());
             mErrorListener.onError(new BaseResponse.Error(e.getMessage()));
         } catch(NullPointerException e){
-            System.out.println("NullPointerException at WebsocketWorkerThreas. Msg: "+e.getMessage());
+            log.error("NullPointerException at WebsocketWorkerThreas. Msg: "+e.getMessage());
             mErrorListener.onError(new BaseResponse.Error(e.getMessage()));
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException. Msg: "+e.getMessage());
+            log.error("NoSuchAlgorithmException. Msg: "+e.getMessage());
             mErrorListener.onError(new BaseResponse.Error(e.getMessage()));
         } catch(IllegalArgumentException e){
-            System.out.println("IllegalArgumentException. Msg: "+e.getMessage());
+            log.error("IllegalArgumentException. Msg: "+e.getMessage());
             mErrorListener.onError(new BaseResponse.Error(e.getMessage()));
         }
     }
@@ -98,7 +102,7 @@ public class WebsocketWorkerThread extends Thread {
         try {
             mWebSocket.connect();
         } catch (WebSocketException e) {
-            System.out.println("WebSocketException. Msg: "+e.getMessage());
+            log.error("WebSocketException. Msg: "+e.getMessage());
             mErrorListener.onError(new BaseResponse.Error(e.getMessage()));
         }
     }

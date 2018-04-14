@@ -7,11 +7,14 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.github.utransnet.graphenej.interfaces.NodeErrorListener;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.BaseResponse;
+import org.slf4j.Logger;
 
 /**
  * Base class that should be extended by any implementation of a specific request to the full node.
  */
 public abstract class BaseGrapheneHandler extends WebSocketAdapter {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BaseGrapheneHandler.class);
 
     protected WitnessResponseListener mListener;
     protected NodeErrorListener mErrorListener;
@@ -50,17 +53,17 @@ public abstract class BaseGrapheneHandler extends WebSocketAdapter {
 
     @Override
     public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-        System.out.println("onError. cause: "+cause.getMessage());
+        log.error("onError. cause: "+cause.getMessage());
         mErrorListener.onError(new BaseResponse.Error(cause.getMessage()));
         websocket.disconnect();
     }
 
     @Override
     public void handleCallbackError(WebSocket websocket, Throwable cause) throws Exception {
-        System.out.println("handleCallbackError. message: "+cause.getMessage()+", error: "+cause.getClass());
-        for (StackTraceElement element : cause.getStackTrace()){
+        log.error("handleCallbackError. message: "+cause.getMessage()+", error: "+cause.getClass(), cause);
+        /*for (StackTraceElement element : cause.getStackTrace()){
             System.out.println(element.getFileName()+"#"+element.getClassName()+":"+element.getLineNumber());
-        }
+        }*/
         // Should be replaced for mErrorListener (NodeErrorListener type) only in the future
         if(mErrorListener != null){
             mErrorListener.onError(new BaseResponse.Error(cause.getMessage()));

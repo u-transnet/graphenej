@@ -20,6 +20,7 @@ import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.BaseResponse;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements get_limit_orders request handler.
@@ -32,6 +33,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *
  */
 public class GetLimitOrders extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetLimitOrders.class);
 
     private String a;
     private String b;
@@ -89,7 +92,7 @@ public class GetLimitOrders extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println("<<< "+frame.getPayloadText());
+            log.debug("<<< "+frame.getPayloadText());
         try {
             String response = frame.getPayloadText();
             GsonBuilder builder = new GsonBuilder();
@@ -115,7 +118,7 @@ public class GetLimitOrders extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame()){
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
         }
     }
 

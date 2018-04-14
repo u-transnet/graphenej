@@ -10,6 +10,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -27,6 +28,8 @@ import java.util.Map;
  * @see <a href="https://goo.gl/isRfeg">get_objects API doc</a>
  */
 public class GetObjects extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetObjects.class);
     private List<String> ids;
 
     private boolean mOneTime;
@@ -74,7 +77,7 @@ public class GetObjects extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if (frame.isTextFrame()) {
-            System.out.println("<< " + frame.getPayloadText());
+            log.debug("<< " + frame.getPayloadText());
         }
         String response = frame.getPayloadText();
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -144,7 +147,7 @@ public class GetObjects extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if (frame.isTextFrame()) {
-            System.out.println(">> " + frame.getPayloadText());
+            log.debug(">> " + frame.getPayloadText());
         }
     }
 }

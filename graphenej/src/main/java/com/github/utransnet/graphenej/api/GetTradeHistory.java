@@ -16,6 +16,7 @@ import com.github.utransnet.graphenej.RPC;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements get_trade_history request handler.
@@ -29,6 +30,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *
  */
 public class GetTradeHistory extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetTradeHistory.class);
 
     private String a;
     private String b;
@@ -96,7 +99,7 @@ public class GetTradeHistory extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if (frame.isTextFrame()) {
-            System.out.println("<<< " + frame.getPayloadText());
+            log.debug("<<< " + frame.getPayloadText());
         }
         try {
             String response = frame.getPayloadText();
@@ -121,7 +124,7 @@ public class GetTradeHistory extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if (frame.isTextFrame()) {
-            System.out.println(">>> " + frame.getPayloadText());
+            log.debug(">>> " + frame.getPayloadText());
         }
     }
 }

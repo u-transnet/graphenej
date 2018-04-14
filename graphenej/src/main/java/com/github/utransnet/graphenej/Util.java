@@ -35,6 +35,9 @@ import java.util.logging.Logger;
  * Class used to encapsulate common utility methods
  */
 public class Util {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Util.class);
+
     public static final String TAG = "Util";
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
     public static final int LZMA = 0;
@@ -162,7 +165,7 @@ public class Util {
     public static byte[] decompress(byte[] inputBytes, int which) {
         InputStream in = null;
         try {
-            System.out.println("Bytes: "+Util.bytesToHex(inputBytes));
+            log.trace("Bytes: "+Util.bytesToHex(inputBytes));
             ByteArrayInputStream input = new ByteArrayInputStream(inputBytes);
             ByteArrayOutputStream output = new ByteArrayOutputStream(16*2048);
             if(which == XZ) {
@@ -200,7 +203,7 @@ public class Util {
                         output.write(size);
                     }
                 }catch(CorruptedInputException ex){
-                    System.out.println("CorruptedInputException. Msg: "+ex.getMessage());
+                    log.error("CorruptedInputException. Msg: "+ex.getMessage());
                 }
             }
             in.close();

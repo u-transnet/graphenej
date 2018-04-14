@@ -3,6 +3,7 @@ package com.github.utransnet.graphenej;
 import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
+import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
@@ -17,6 +18,8 @@ import java.util.Date;
  * Class that represents a graphene user account.
  */
 public class UserAccount extends GrapheneObject implements GrapheneSerializable {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserAccount.class);
 
     public static final String PROXY_TO_SELF = "1.2.5";
     public static final String KEY_MEMBERSHIP_EXPIRATION_DATE = "membership_expiration_date";
@@ -130,7 +133,7 @@ public class UserAccount extends GrapheneObject implements GrapheneSerializable 
         try {
             Varint.writeUnsignedVarLong(this.instance, out);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error while writing bites", e);
         }
         return byteArrayOutputStream.toByteArray();
     }
@@ -268,7 +271,7 @@ public class UserAccount extends GrapheneObject implements GrapheneSerializable 
                 Date date = dateFormat.parse(jsonAccount.get(KEY_MEMBERSHIP_EXPIRATION_DATE).getAsString());
                 userAccount.setMembershipExpirationDate(date.getTime());
             } catch (ParseException e) {
-                System.out.println("ParseException. Msg: "+e.getMessage());
+                log.error("ParseException. Msg: "+e.getMessage());
             }
 
             // Setting the other fields

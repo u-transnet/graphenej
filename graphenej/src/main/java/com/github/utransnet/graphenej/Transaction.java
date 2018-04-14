@@ -1,5 +1,6 @@
 package com.github.utransnet.graphenej;
 
+import com.github.utransnet.graphenej.operations.*;
 import com.google.common.primitives.Bytes;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -26,14 +27,14 @@ import java.util.TimeZone;
 
 import com.github.utransnet.graphenej.interfaces.ByteSerializable;
 import com.github.utransnet.graphenej.interfaces.JsonSerializable;
-import com.github.utransnet.graphenej.operations.CustomOperation;
-import com.github.utransnet.graphenej.operations.LimitOrderCreateOperation;
-import com.github.utransnet.graphenej.operations.TransferOperation;
+import org.slf4j.Logger;
 
 /**
  * Class used to represent a generic Graphene transaction.
  */
 public class Transaction implements ByteSerializable, JsonSerializable {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Transaction.class);
 
     /* Default expiration time */
     public static final int DEFAULT_EXPIRATION_TIME = 30;
@@ -344,9 +345,9 @@ public class Transaction implements ByteSerializable, JsonSerializable {
                     } else if (operationId == OperationType.WITNESS_UPDATE_OPERATION.ordinal()) {
                         //TODO: Add operation deserialization support
                     } else if (operationId == OperationType.PROPOSAL_CREATE_OPERATION.ordinal()) {
-                        //TODO: Add operation deserialization support
+                        operation = context.deserialize(jsonOperation, ProposalCreateOperation.class);
                     } else if (operationId == OperationType.PROPOSAL_UPDATE_OPERATION.ordinal()) {
-                        //TODO: Add operation deserialization support
+                        operation = context.deserialize(jsonOperation, ProposalUpdateOperation.class);
                     } else if (operationId == OperationType.PROPOSAL_DELETE_OPERATION.ordinal()) {
                         //TODO: Add operation deserialization support
                     } else if (operationId == OperationType.WITHDRAW_PERMISSION_CREATE_OPERATION.ordinal()) {
@@ -393,10 +394,10 @@ public class Transaction implements ByteSerializable, JsonSerializable {
                 }
                 return new Transaction(blockData, operationList);
             }catch(Exception e){
-                System.out.println("Exception. Msg: "+e.getMessage());
-                for(StackTraceElement el : e.getStackTrace()){
+                log.error("Exception. Msg: "+e.getMessage(), e);
+                /*for(StackTraceElement el : e.getStackTrace()){
                     System.out.println(el.getFileName()+"#"+el.getMethodName()+":"+el.getLineNumber());
-                }
+                }*/
             }
             return new Transaction(blockData, operationList);
         }

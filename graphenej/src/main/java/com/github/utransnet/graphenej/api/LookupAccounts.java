@@ -16,6 +16,7 @@ import com.github.utransnet.graphenej.UserAccount;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements lookup_accounts request handler.
@@ -27,6 +28,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *  @see <a href="https://goo.gl/zhPjuW">lookup_accounts API doc</a>
  */
 public class LookupAccounts extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(LookupAccounts.class);
 
     public static final int DEFAULT_MAX = 1000;
     private final String accountName;
@@ -108,7 +111,7 @@ public class LookupAccounts extends BaseGrapheneHandler {
 
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        System.out.println("<<< "+frame.getPayloadText());
+        log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
 
         Type LookupAccountsResponse = new TypeToken<WitnessResponse<List<UserAccount>>>(){}.getType();
@@ -129,6 +132,6 @@ public class LookupAccounts extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

@@ -11,6 +11,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.bitcoinj.core.ECKey;
+import org.slf4j.Logger;
 import org.spongycastle.math.ec.ECPoint;
 
 import java.lang.reflect.Type;
@@ -32,6 +33,9 @@ import com.github.utransnet.graphenej.interfaces.JsonSerializable;
  * {@url https://bitshares.org/doxygen/structgraphene_1_1chain_1_1memo__data.html}
  */
 public class Memo implements ByteSerializable, JsonSerializable {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Memo.class);
+
     public final static String TAG = "Memo";
     public static final String KEY_FROM = "from";
     public static final String KEY_TO = "to";
@@ -145,7 +149,7 @@ public class Memo implements ByteSerializable, JsonSerializable {
             // Applying encryption
             encrypted = Util.encryptAES(msgFinal, seed);
         } catch (NoSuchAlgorithmException ex) {
-            System.out.println("NoSuchAlgotithmException. Msg:"+ ex.getMessage());
+            log.error("NoSuchAlgotithmException. Msg:"+ ex.getMessage());
         }
         return encrypted;
     }
@@ -205,7 +209,7 @@ public class Memo implements ByteSerializable, JsonSerializable {
                 throw new ChecksumException("Invalid checksum found while performing decryption");
             }
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgotithmException. Msg:"+ e.getMessage());
+            log.error("NoSuchAlgotithmException. Msg:"+ e.getMessage());
         }
         return plaintext;
     }
@@ -343,7 +347,7 @@ public class Memo implements ByteSerializable, JsonSerializable {
 
                 memo = new Memo(from, to, nonce, message);
             }catch(MalformedAddressException e){
-                System.out.println("MalformedAddressException. Msg: "+e.getMessage());
+                log.error("MalformedAddressException. Msg: "+e.getMessage());
             }
             return memo;
         }

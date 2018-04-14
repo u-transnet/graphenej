@@ -22,12 +22,15 @@ import com.github.utransnet.graphenej.models.HistoricalTransfer;
 import com.github.utransnet.graphenej.models.WitnessResponse;
 import com.github.utransnet.graphenej.objects.Memo;
 import com.github.utransnet.graphenej.operations.TransferOperation;
+import org.slf4j.Logger;
 
 /**
  * Class used to encapsulate the communication sequence used to retrieve the transaction history of
  * a given user.
  */
 public class GetRelativeAccountHistory extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetRelativeAccountHistory.class);
     // Sequence of message ids
     private final static int LOGIN_ID = 1;
     private final static int GET_HISTORY_ID = 2;
@@ -137,7 +140,7 @@ public class GetRelativeAccountHistory extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         String response = frame.getPayloadText();
-        System.out.println("<<< "+response);
+        log.debug("<<< "+response);
         Gson gson = new Gson();
         BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
         if(baseResponse.error != null){
@@ -209,6 +212,6 @@ public class GetRelativeAccountHistory extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

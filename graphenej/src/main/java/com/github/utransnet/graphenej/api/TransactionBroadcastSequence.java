@@ -20,11 +20,14 @@ import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.BaseResponse;
 import com.github.utransnet.graphenej.models.DynamicGlobalProperties;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  * Class that will handle the transaction publication procedure.
  */
 public class TransactionBroadcastSequence extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TransactionBroadcastSequence.class);
     private final String TAG = this.getClass().getName();
 
     private final static int LOGIN_ID = 1;
@@ -84,7 +87,7 @@ public class TransactionBroadcastSequence extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println("<<< "+frame.getPayloadText());
+            log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DynamicGlobalProperties.class, new DynamicGlobalProperties.DynamicGlobalPropertiesDeserializer());
@@ -196,13 +199,13 @@ public class TransactionBroadcastSequence extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame()){
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
         }
     }
 
     @Override
     public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-        System.out.println("onError. cause: "+cause.getMessage());
+        log.error("onError. cause: "+cause.getMessage());
         mListener.onError(new BaseResponse.Error(cause.getMessage()));
         if(mOneTime){
             websocket.disconnect();
@@ -211,10 +214,10 @@ public class TransactionBroadcastSequence extends BaseGrapheneHandler {
 
     @Override
     public void handleCallbackError(WebSocket websocket, Throwable cause) throws Exception {
-        System.out.println("handleCallbackError. cause: "+cause.getMessage()+", error: "+cause.getClass());
-        for (StackTraceElement element : cause.getStackTrace()){
+        log.error("handleCallbackError. cause: "+cause.getMessage()+", error: "+cause.getClass(), cause);
+        /*for (StackTraceElement element : cause.getStackTrace()){
             System.out.println(element.getFileName()+"#"+element.getClassName()+":"+element.getLineNumber());
-        }
+        }*/
         mListener.onError(new BaseResponse.Error(cause.getMessage()));
         if(mOneTime){
             websocket.disconnect();

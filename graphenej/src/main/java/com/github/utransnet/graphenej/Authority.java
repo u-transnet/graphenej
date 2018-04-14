@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.github.utransnet.graphenej.errors.MalformedAddressException;
 import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
+import org.slf4j.Logger;
 
 /**
  * Class used to represent the weighted set of keys and accounts that must approve operations.
@@ -22,6 +23,9 @@ import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
  * {@see <a href="https://bitshares.org/doxygen/structgraphene_1_1chain_1_1authority.html">Authority</a>}
  */
 public class Authority implements GrapheneSerializable {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Authority.class);
+
     public static final String KEY_ACCOUNT_AUTHS = "account_auths";
     public static final String KEY_KEY_AUTHS = "key_auths";
     public static final String KEY_WEIGHT_THRESHOLD = "weight_threshold";
@@ -183,9 +187,9 @@ public class Authority implements GrapheneSerializable {
         Authority authority = (Authority) obj;
         HashMap<PublicKey, Long> keyAuths = authority.getKeyAuths();
         HashMap<UserAccount, Long> accountAuths = authority.getAccountAuths();
-        System.out.println("key auths match: "+this.key_auths.equals(keyAuths));
-        System.out.println("account auths match: "+this.account_auths.equals(accountAuths));
-        System.out.println("weight threshold matches: "+(this.weight_threshold == authority.weight_threshold));
+        log.trace("key auths match: "+this.key_auths.equals(keyAuths));
+        log.trace("account auths match: "+this.account_auths.equals(accountAuths));
+        log.trace("weight threshold matches: "+(this.weight_threshold == authority.weight_threshold));
         return this.key_auths.equals(keyAuths) &&
                 this.account_auths.equals(accountAuths) &&
                 this.weight_threshold == authority.weight_threshold;
@@ -220,7 +224,7 @@ public class Authority implements GrapheneSerializable {
                 try {
                     keyAuthMap.put(new Address(addr).getPublicKey(), weight);
                 } catch (MalformedAddressException e) {
-                    System.out.println("MalformedAddressException. Msg: "+e.getMessage());
+                    log.error("MalformedAddressException. Msg: "+e.getMessage());
                 }
             }
             for(int i = 0; i < accountAuthArray.size(); i++){

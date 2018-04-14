@@ -16,6 +16,7 @@ import com.github.utransnet.graphenej.RPC;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements lookup_asset_symbols request handler.
@@ -27,6 +28,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *  @see <a href="https://goo.gl/WvREGV">lookup_asset_symbols API doc</a>
  */
 public class LookupAssetSymbols extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(LookupAssetSymbols.class);
     private WitnessResponseListener mListener;
     private List<? extends Object> assets;
 
@@ -81,7 +84,7 @@ public class LookupAssetSymbols extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         String response = frame.getPayloadText();
-        System.out.println("<<< "+response);
+        log.debug("<<< "+response);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Type LookupAssetSymbolsResponse = new TypeToken<WitnessResponse<List<Asset>>>(){}.getType();
         gsonBuilder.registerTypeAdapter(Asset.class, new Asset.AssetDeserializer());
@@ -95,6 +98,6 @@ public class LookupAssetSymbols extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

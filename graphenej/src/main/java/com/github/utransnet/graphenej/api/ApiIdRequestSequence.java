@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -23,6 +24,8 @@ import java.util.Map;
  * Created by Artem on 27.03.2018.
  */
 public abstract class ApiIdRequestSequence extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiIdRequestSequence.class);
 
     protected final static int LOGIN_ID_RESPONSE = 0;
     protected final static int API_ID_RESPONSE = 1;
@@ -60,7 +63,7 @@ public abstract class ApiIdRequestSequence extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println("<<< "+frame.getPayloadText());
+            log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         GsonBuilder builder = gsonBuilder();
         Gson gson = builder.create();
@@ -99,13 +102,13 @@ public abstract class ApiIdRequestSequence extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame()){
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
         }
     }
 
     @Override
     public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-        System.out.println("onError. cause: "+cause.getMessage());
+        log.error("onError. cause: "+cause.getMessage());
         mListener.onError(new BaseResponse.Error(cause.getMessage()));
         if(mOneTime){
             websocket.disconnect();
@@ -114,10 +117,10 @@ public abstract class ApiIdRequestSequence extends BaseGrapheneHandler {
 
     @Override
     public void handleCallbackError(WebSocket websocket, Throwable cause) throws Exception {
-        System.out.println("handleCallbackError. cause: "+cause.getMessage()+", error: "+cause.getClass());
-        for (StackTraceElement element : cause.getStackTrace()){
+        log.error("handleCallbackError. cause: "+cause.getMessage()+", error: "+cause.getClass(), cause);
+        /*for (StackTraceElement element : cause.getStackTrace()){
             System.out.println(element.getFileName()+"#"+element.getClassName()+":"+element.getLineNumber());
-        }
+        }*/
         mListener.onError(new BaseResponse.Error(cause.getMessage()));
         if(mOneTime){
             websocket.disconnect();

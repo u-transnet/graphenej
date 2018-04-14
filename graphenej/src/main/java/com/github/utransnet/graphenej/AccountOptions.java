@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.github.utransnet.graphenej.errors.MalformedAddressException;
 import com.github.utransnet.graphenej.interfaces.GrapheneSerializable;
+import org.slf4j.Logger;
 
 /**
  * Created by nelson on 12/5/16.
@@ -149,6 +150,8 @@ public class AccountOptions implements GrapheneSerializable {
      */
     public static class AccountOptionsDeserializer implements JsonDeserializer<AccountOptions> {
 
+        private static final Logger log = org.slf4j.LoggerFactory.getLogger(AccountOptionsDeserializer.class);
+
         @Override
         public AccountOptions deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject baseObject = json.getAsJsonObject();
@@ -157,7 +160,7 @@ public class AccountOptions implements GrapheneSerializable {
                 Address address = new Address(baseObject.get(KEY_MEMO_KEY).getAsString());
                 options = new AccountOptions(address.getPublicKey());
             } catch (MalformedAddressException e) {
-                System.out.println("MalformedAddressException. Msg: "+e.getMessage());
+                log.error("MalformedAddressException. Msg: "+e.getMessage());
                 options = new AccountOptions();
             }
             return options;

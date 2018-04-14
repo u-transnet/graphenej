@@ -19,6 +19,7 @@ import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.AccountProperties;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements get_accounts request handler.
@@ -30,6 +31,9 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *  @see <a href="https://goo.gl/r5RqKG">get_accounts API doc</a>
  */
 public class GetAccounts extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetAccounts.class);
+
     private String accountId;
     private List<UserAccount> userAccounts;
     private WitnessResponseListener mListener;
@@ -112,7 +116,7 @@ public class GetAccounts extends BaseGrapheneHandler {
 
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        System.out.println("<<< "+frame.getPayloadText());
+        log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         GsonBuilder builder = new GsonBuilder();
 
@@ -134,6 +138,6 @@ public class GetAccounts extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

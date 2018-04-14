@@ -1,13 +1,14 @@
 package com.github.utransnet.graphenej.api.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.utransnet.graphenej.api.BaseGrapheneHandler;
 import com.github.utransnet.graphenej.api.SubscriptionMessagesHub;
 import com.github.utransnet.graphenej.errors.RepeatedRequestIdException;
 import com.github.utransnet.graphenej.interfaces.NodeErrorListener;
 import com.github.utransnet.graphenej.models.BaseResponse;
+import org.slf4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *  Class used to encapsulate all connections that should be done to a node (with node hop support).
@@ -17,6 +18,7 @@ import com.github.utransnet.graphenej.models.BaseResponse;
  */
 public class NodeConnection {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(NodeConnection.class);
     /**
      * List of URLs of the nodes
      */
@@ -92,7 +94,7 @@ public class NodeConnection {
     private NodeErrorListener mInternalErrorListener = new NodeErrorListener() {
         @Override
         public void onError(BaseResponse.Error error) {
-            System.out.println("NodeConnect Error. Msg: "+error);
+            log.error("NodeConnect Error. Msg: "+error);
             mUrlIndex++;
             connect(mUser, mPassword, mSubscribe, mErrorListener);
         }
@@ -118,7 +120,7 @@ public class NodeConnection {
     public void connect(String user, String password, boolean subscribe, NodeErrorListener errorListener) {
         if(mUrlList.size() > 0){
             if(mUrlIndex < mUrlList.size()){
-                System.out.println("Connecting to: "+ this.mUrlList.get(mUrlIndex));
+                log.info("Connecting to: "+ this.mUrlList.get(mUrlIndex));
                 mUser = user;
                 mPassword = password;
                 mSubscribe = subscribe;

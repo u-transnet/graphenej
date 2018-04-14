@@ -17,6 +17,7 @@ import com.github.utransnet.graphenej.UserAccount;
 import com.github.utransnet.graphenej.interfaces.WitnessResponseListener;
 import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements get_key_references request handler.
@@ -28,6 +29,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *  @see <a href="https://goo.gl/np8CYF">get_key_references API doc</a>
  */
 public class GetKeyReferences extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetKeyReferences.class);
 
     private List<Address> addresses;
 
@@ -104,7 +107,7 @@ public class GetKeyReferences extends BaseGrapheneHandler {
 
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        System.out.println("<<< "+frame.getPayloadText());
+        log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         GsonBuilder builder = new GsonBuilder();
 
@@ -124,6 +127,6 @@ public class GetKeyReferences extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

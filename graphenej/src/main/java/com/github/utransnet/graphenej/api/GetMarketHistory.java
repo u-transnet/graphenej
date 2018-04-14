@@ -21,6 +21,7 @@ import com.github.utransnet.graphenej.models.ApiCall;
 import com.github.utransnet.graphenej.models.BaseResponse;
 import com.github.utransnet.graphenej.models.BucketObject;
 import com.github.utransnet.graphenej.models.WitnessResponse;
+import org.slf4j.Logger;
 
 /**
  *  Class that implements get_market_history request handler.
@@ -31,6 +32,8 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
  *
  */
 public class GetMarketHistory extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetMarketHistory.class);
 
     // Sequence of message ids
     private final static int LOGIN_ID = 1;
@@ -174,7 +177,7 @@ public class GetMarketHistory extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         String response = frame.getPayloadText();
-        System.out.println("<<< "+response);
+        log.debug("<<< "+response);
         Gson gson = new Gson();
         BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
         if(baseResponse.error != null){
@@ -238,6 +241,6 @@ public class GetMarketHistory extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

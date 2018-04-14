@@ -13,12 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.utransnet.graphenej.interfaces.JsonSerializable;
+import org.slf4j.Logger;
 
 /**
  * Class used to build a Graphene websocket API call.
  * @see <a href="http://docs.bitshares.org/api/websocket.html">Websocket Calls & Notifications</a>
  */
 public class ApiCall implements JsonSerializable {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiCall.class);
+
     public static final String KEY_SEQUENCE_ID = "id";
     public static final String KEY_METHOD = "method";
     public static final String KEY_PARAMS = "params";
@@ -92,7 +96,7 @@ public class ApiCall implements JsonSerializable {
             }else if(this.params.get(i) instanceof Boolean){
                 methodParams.add((boolean) this.params.get(i));
             }else{
-                System.out.println("Skipping parameter of type: "+this.params.get(i).getClass());
+                log.warn("Skipping parameter of type: "+this.params.get(i).getClass());
             }
         }
         paramsArray.add(methodParams);

@@ -11,11 +11,14 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 
 import com.github.utransnet.graphenej.crypto.SecureRandomGenerator;
+import org.slf4j.Logger;
 
 /**
  * Class used to encapsulate all BrainKey-related operations.
  */
 public class BrainKey {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(BrainKey.class);
 
     // The size of the word dictionary
     public static final int DICT_WORD_COUNT = 49744;
@@ -78,9 +81,9 @@ public class BrainKey {
             mPrivateKey = ECKey.fromPrivate(result);
 
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgotithmException. Msg: " + e.getMessage());
+            log.error("NoSuchAlgotithmException. Msg: " + e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            System.out.println("UnsupportedEncodingException. Msg: " + e.getMessage());
+            log.error("UnsupportedEncodingException. Msg: " + e.getMessage());
         }
     }
 

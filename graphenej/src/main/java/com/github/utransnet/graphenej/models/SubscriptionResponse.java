@@ -18,6 +18,7 @@ import com.github.utransnet.graphenej.GrapheneObject;
 import com.github.utransnet.graphenej.ObjectType;
 import com.github.utransnet.graphenej.Transaction;
 import com.github.utransnet.graphenej.interfaces.SubscriptionListener;
+import org.slf4j.Logger;
 
 /**
  * Class that represents a generic subscription response.
@@ -46,6 +47,9 @@ import com.github.utransnet.graphenej.interfaces.SubscriptionListener;
  * Created by nelson on 1/12/17.
  */
 public class SubscriptionResponse {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(SubscriptionResponse.class);
+
     private static final String TAG = "SubscriptionResponse";
     public static final String KEY_ID = "id";
     public static final String KEY_METHOD = "method";
@@ -117,7 +121,7 @@ public class SubscriptionResponse {
                     this.listenerTypeCount.put(subscriptionListener.getInterestObjectType(), currentCount - 1);
                     this.mListeners.remove(subscriptionListener);
                 }else{
-                    System.out.println("Trying to remove subscription listener, but none is registered!");
+                    log.warn("Trying to remove subscription listener, but none is registered!");
                 }
             }
         }

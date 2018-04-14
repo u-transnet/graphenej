@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -26,6 +27,8 @@ import java.util.*;
  * A WebSocket adapter prepared to be used as a basic dispatch hub for subscription messages.
  */
 public class SubscriptionMessagesHub extends BaseGrapheneHandler implements SubscriptionHub {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(SubscriptionMessagesHub.class);
 
     // Sequence of message ids
     public final static int LOGIN_ID = 1;
@@ -133,7 +136,7 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         String message = frame.getPayloadText();
-        System.out.println("<< " + message);
+        log.debug("<< " + message);
         if (currentId == LOGIN_ID) {
             requestApiId(websocket);
         } else if (currentId == GET_DATABASE_ID) {
@@ -235,7 +238,7 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
 
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        System.out.println(">> " + frame.getPayloadText());
+        log.debug(">> " + frame.getPayloadText());
     }
 
     /**
@@ -331,15 +334,15 @@ public class SubscriptionMessagesHub extends BaseGrapheneHandler implements Subs
             // point of view it doesn't make a difference.
             handler.onConnected(mWebsocket, null);
         } catch (Exception e) {
-            System.out.println("Exception. Msg: " + e.getMessage());
-            System.out.println("Exception type: " + e);
+            log.error("Exception. Msg: " + e.getMessage(), e);
+            /*System.out.println("Exception type: " + e);
             for (StackTraceElement el : e.getStackTrace()) {
                 System.out.println(String.format("at %s.%s(%s:%s)",
                         el.getClassName(),
                         el.getMethodName(),
                         el.getFileName(),
                         el.getLineNumber()));
-            }
+            }*/
         }
     }
 }

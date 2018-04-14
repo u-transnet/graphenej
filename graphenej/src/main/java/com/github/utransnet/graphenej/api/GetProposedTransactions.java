@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -29,6 +30,9 @@ import java.util.Map;
  *  @see <a href="https://goo.gl/r5RqKG">get_accounts API doc</a>
  */
 public class GetProposedTransactions extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetProposedTransactions.class);
+
     private String accountId;
     private WitnessResponseListener mListener;
     private boolean mOneTime;
@@ -62,7 +66,7 @@ public class GetProposedTransactions extends BaseGrapheneHandler {
 
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
-        System.out.println("<<< "+frame.getPayloadText());
+        log.debug("<<< "+frame.getPayloadText());
         String response = frame.getPayloadText();
         GsonBuilder builder = new GsonBuilder();
 
@@ -89,6 +93,6 @@ public class GetProposedTransactions extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

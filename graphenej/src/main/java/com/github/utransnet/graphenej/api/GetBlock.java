@@ -16,6 +16,7 @@ import com.github.utransnet.graphenej.models.WitnessResponse;
 import com.github.utransnet.graphenej.operations.CustomOperation;
 import com.github.utransnet.graphenej.operations.LimitOrderCreateOperation;
 import com.github.utransnet.graphenej.operations.TransferOperation;
+import org.slf4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GetBlock extends BaseGrapheneHandler {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GetBlock.class);
 
     private final static int LOGIN_ID = 1;
     private final static int GET_DATABASE_ID = 2;
@@ -59,7 +62,7 @@ public class GetBlock extends BaseGrapheneHandler {
     @Override
     public void onTextFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
         String response = frame.getPayloadText();
-        System.out.println("<<< "+response);
+        log.debug("<<< "+response);
 
         Gson gson = new Gson();
         BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
@@ -107,6 +110,6 @@ public class GetBlock extends BaseGrapheneHandler {
     @Override
     public void onFrameSent(WebSocket websocket, WebSocketFrame frame) throws Exception {
         if(frame.isTextFrame())
-            System.out.println(">>> "+frame.getPayloadText());
+            log.debug(">>> "+frame.getPayloadText());
     }
 }

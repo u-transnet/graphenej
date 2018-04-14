@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 
 import com.github.utransnet.graphenej.crypto.SecureRandomStrengthener;
 import com.github.utransnet.graphenej.models.backup.WalletBackup;
+import org.slf4j.Logger;
 
 /**
  * Class to manage the backup files
@@ -23,6 +24,8 @@ import com.github.utransnet.graphenej.models.backup.WalletBackup;
  * @author Nelson R. Pérez
  */
 public abstract class FileBin {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(FileBin.class);
 
     public static final int PUBLIC_KEY_LENGTH = 33;
 
@@ -61,12 +64,12 @@ public abstract class FileBin {
 
             byte[] decompressedData = Util.decompress(compressedData, Util.LZMA);
             String walletString = new String(decompressedData, "UTF-8");
-            System.out.println("Wallet str: "+walletString);
+            log.info("Wallet str: "+walletString);
             return new GsonBuilder().create().fromJson(walletString, WalletBackup.class);
         }catch(NoSuchAlgorithmException e){
-            System.out.println("NoSuchAlgorithmException. Msg: "+e.getMessage());
+            log.error("NoSuchAlgorithmException. Msg: "+e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            System.out.println("UnsupportedEncodingException. Msg: "+e.getMessage());
+            log.error("UnsupportedEncodingException. Msg: "+e.getMessage());
         }
         return null;
     }
@@ -79,7 +82,7 @@ public abstract class FileBin {
         try{
             String json = new GsonBuilder().create().toJson(walletBackup, WalletBackup.class);
             byte[] compressed = Util.compress(json.getBytes(), Util.LZMA);
-            System.out.println("json: "+json);
+            log.info("json: "+json);
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] checksum = md.digest(compressed);
             byte[] checksummed = new byte[compressed.length + 4];
@@ -101,9 +104,9 @@ public abstract class FileBin {
 
             return finalPayload;
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithmException. Msg: "+e.getMessage());
+            log.error("NoSuchAlgorithmException. Msg: "+e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            System.out.println("UnsupportedEncodingException. Msg: "+e.getMessage());
+            log.error("UnsupportedEncodingException. Msg: "+e.getMessage());
         }
         return null;
     }

@@ -2,6 +2,7 @@ package com.github.utransnet.graphenej.models;
 
 import com.google.gson.*;
 import com.github.utransnet.graphenej.Asset;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -51,6 +52,8 @@ public class BucketObject {
 
     public static class BucketDeserializer implements JsonDeserializer<BucketObject> {
 
+        private static final Logger log = org.slf4j.LoggerFactory.getLogger(BucketDeserializer.class);
+
         @Override
         public BucketObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonBucket = json.getAsJsonObject();
@@ -76,7 +79,7 @@ public class BucketObject {
             try {
                 bucket.key.open = dateFormat.parse(jsonBucket.get(KEY_KEY).getAsJsonObject().get(KEY_OPEN).getAsString());
             } catch (ParseException e) {
-                System.out.println("ParseException while deserializing BucketObject. Msg: "+e.getMessage());
+                log.error("ParseException while deserializing BucketObject. Msg: "+e.getMessage());
             }
             return bucket;
         }
